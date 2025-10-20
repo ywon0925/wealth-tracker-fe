@@ -2,6 +2,8 @@
 
 # dependencies
 node_modules/
+.pnp
+.pnp.js
 
 # Expo
 .expo/
@@ -10,30 +12,93 @@ web-build/
 expo-env.d.ts
 
 # Native
-.kotlin/
 *.orig.*
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
+*.hprof
+.cxx/
+.gradle
+local.properties
+*.iml
+.idea/
+.kotlin/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/captures/
+android/.idea/
+android/local.properties
+android/*.iml
+android/.externalNativeBuild
+android/.cxx
+android/app/release/
+
+# iOS
+ios/Pods/
+ios/**/*.xcworkspace/xcuserdata
+ios/**/*.xcodeproj/xcuserdata
+ios/**/*.xcodeproj/project.xcworkspace/xcuserdata
+ios/build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+DerivedData/
+.xcode.env.local
 
 # Metro
 .metro-health-check*
+.metro
 
 # debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+lerna-debug.log*
+.pnpm-debug.log*
 
 # macOS
 .DS_Store
 *.pem
+.AppleDouble
+.LSOverride
 
 # local env files
+.env
 .env*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
+
+# testing
+coverage/
+*.lcov
+.nyc_output
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Temporary files
+*.log
+*.tmp
+*.temp
+
+# OS generated files
+Thumbs.db
 
 app-example
