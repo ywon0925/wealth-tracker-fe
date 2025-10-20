@@ -1,29 +1,69 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
+import { useEffect, useMemo } from 'react';
+import { useAuthStore } from '../src/store/authStore';
+import { apiClient } from '../src/services/apiClient';
+import { ThemeProvider, useAppTheme } from '../src/theme';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Platform } from 'react-native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+function AppStack() {
+  const router = useRouter();
+  const loadUser = useAuthStore((state) => state.loadUser);
+  const logout = useAuthStore((state) => state.logout);
+  const { theme, mode } = useAppTheme();
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  useEffect(() => {
+    const unsubscribe = () => {
+      apiClient.setUnauthorizedCallback(() => {});
+    };
+
+    apiClient.setUnauthorizedCallback(() => {
+      console.log('Auto-logout triggered due to 401');
+      logout();
+      router.replace('/login');
+    });
+
+    return unsubscribe;
+  }, [logout, router]);
+
+  const contentStyle = useMemo(
+    () => ({
+      backgroundColor: theme.colors.background,
+    }),
+    [theme.colors.background]
+  );
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+    <>
+      <StatusBar
+        style={mode === 'dark' ? 'light' : 'dark'}
+        backgroundColor={theme.colors.background}
+        animated
+        translucent={Platform.OS === 'android'}
+      />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="register" />
+        <Stack.Screen name="(tabs)" />
       </Stack>
-      <StatusBar style="auto" />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <AppStack />
     </ThemeProvider>
   );
 }
